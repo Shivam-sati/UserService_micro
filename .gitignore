@@ -1,0 +1,53 @@
+# ==========================================
+#  Root .gitignore for Microservices Project
+# ==========================================
+
+# --- Build directories ---
+target/
+build/
+out/
+
+# --- IDE / Editor settings ---
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# --- Logs and temporary files ---
+*.log
+*.tmp
+*.bak
+*.swp
+
+# --- Environment / Config files ---
+*.env
+.env.*
+application.properties
+application.yml
+application-local.yml
+application-dev.yml
+application-test.yml
+
+# --- OS generated files ---
+.DS_Store
+Thumbs.db
+
+# --- Dependency directories ---
+node_modules/
+dist/
+coverage/
+
+# --- Maven Wrapper ---
+.mvn/wrapper/maven-wrapper.jar
+!/.mvn/wrapper/maven-wrapper.properties
+
+# --- Spring Boot specific ---
+spring.log
+
+# --- Test output ---
+test-output/
+*.test

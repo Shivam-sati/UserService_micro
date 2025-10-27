@@ -1,0 +1,48 @@
+# ==========================================
+# .gitattributes for Microservices Project
+# ==========================================
+
+# --- Ensure consistent line endings ---
+* text=auto
+
+# --- Treat all Java and config files as text ---
+*.java     text
+*.xml      text
+*.yml      text
+*.yaml     text
+*.properties text
+*.gradle   text
+*.md       text
+*.txt      text
+*.html     text
+*.css      text
+*.js       text
+*.ts       text
+
+# --- Treat images and binaries as binary (no diff) ---
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.ico      binary
+*.pdf      binary
+*.jar      binary
+*.war      binary
+*.exe      binary
+*.zip      binary
+
+# --- Handle shell scripts and batch files ---
+*.sh       text eol=lf
+*.bat      text eol=crlf
+
+# --- Make sure Gradle wrapper scripts have LF endings ---
+gradlew     text eol=lf
+gradlew.bat text eol=crlf
+
+# --- Documentation formatting ---
+*.md text eol=lf
+
+# --- GitHub language stats fix (optional) ---
+# Adjusts GitHub’s linguist if needed
+*.yml linguist-language=YAML
+*.properties linguist-language=Java
