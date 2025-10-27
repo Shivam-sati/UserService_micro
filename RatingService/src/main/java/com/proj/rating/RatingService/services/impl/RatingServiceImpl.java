@@ -5,9 +5,10 @@ import com.proj.rating.RatingService.repositories.RatingRepository;
 import com.proj.rating.RatingService.services.RatingService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class RatingServiceImpl implements RatingService {
 
     @Autowired
@@ -26,11 +27,11 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public List<Rating> getRatingByUserId(String userId) {
-        return List.of();
+        return ratingRepository.findByUserId(userId);
     }
 
     @Override
-    public List<Rating> getRatingByHotelId(String HotelId) {
-        return List.of();
+    public List<Rating> getRatingByHotelId(String hotelId) {
+        return ratingRepository.findByHotelId(hotelId);
     }
 }
