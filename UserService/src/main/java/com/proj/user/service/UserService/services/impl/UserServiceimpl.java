@@ -1,20 +1,38 @@
 package com.proj.user.service.UserService.services.impl;
 
+import com.proj.user.service.UserService.entities.Hotel;
+import com.proj.user.service.UserService.entities.Rating;
 import com.proj.user.service.UserService.entities.User;
 import com.proj.user.service.UserService.exceptions.ResourceNotFoundException;
 import com.proj.user.service.UserService.repositories.UserRepository;
 import com.proj.user.service.UserService.services.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceimpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceimpl.class);
 
     @Override
     public User saveUser(User user) {
@@ -30,7 +48,36 @@ public class UserServiceimpl implements UserService {
 
     @Override
     public User getUser(String userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User With given id is not found : " + userId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        ResponseEntity<List<Rating>> ratingResponse = restTemplate.exchange(
+                "http://localhost:8083/ratings/users/" + user.getUserId(),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Rating>>() {}
+        );
+
+        List<Rating> ratings = ratingResponse.getBody();
+
+
+        List<Rating> ratingList = ratings.stream().map(rating -> {
+
+            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://localhost:8082/hotels/" + rating.getHotelId(), Hotel.class);
+            Hotel hotel = forEntity.getBody();
+
+
+            logger.info("response status code : {} ", forEntity.getStatusCode());
+
+            rating.setHotel(hotel);
+
+            return rating;
+
+        }).collect(Collectors.toList());
+
+        user.setRatings(ratingList);
+
+        return user;
     }
 
     @Override
