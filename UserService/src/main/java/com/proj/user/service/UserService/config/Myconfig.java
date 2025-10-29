@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Myconfig {
     @Bean
-    //@LoadBalanced  // only if you’re using service names like "HOTEL-SERVICE"
+    @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }

@@ -4,6 +4,7 @@ import com.proj.user.service.UserService.entities.Hotel;
 import com.proj.user.service.UserService.entities.Rating;
 import com.proj.user.service.UserService.entities.User;
 import com.proj.user.service.UserService.exceptions.ResourceNotFoundException;
+import com.proj.user.service.UserService.external.services.HotelService;
 import com.proj.user.service.UserService.repositories.UserRepository;
 import com.proj.user.service.UserService.services.UserService;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,10 @@ public class UserServiceimpl implements UserService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private HotelService hotelService;
+
+
     private static final Logger logger = LoggerFactory.getLogger(UserServiceimpl.class);
 
     @Override
@@ -52,7 +57,7 @@ public class UserServiceimpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         ResponseEntity<List<Rating>> ratingResponse = restTemplate.exchange(
-                "http://localhost:8083/ratings/users/" + user.getUserId(),
+                "http://RATINGSERVICE/ratings/users/" + user.getUserId(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<Rating>>() {}
@@ -63,11 +68,11 @@ public class UserServiceimpl implements UserService {
 
         List<Rating> ratingList = ratings.stream().map(rating -> {
 
-            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://localhost:8082/hotels/" + rating.getHotelId(), Hotel.class);
-            Hotel hotel = forEntity.getBody();
+            //ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTELSERVICE/hotels/" + rating.getHotelId(), Hotel.class);
+            Hotel hotel = hotelService.getHotel(rating.getHotelId());
 
 
-            logger.info("response status code : {} ", forEntity.getStatusCode());
+            //logger.info("response status code : {} ", forEntity.getStatusCode());
 
             rating.setHotel(hotel);
 
